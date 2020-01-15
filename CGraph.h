@@ -21,5 +21,7 @@ private:
 public:
 	CGraph();
 	CGraph(int lMargin, int uMargin);
+	void setMeasurementValues(GraphicPair* values);
 	void draw(CClientDC* pDC);
+
 };

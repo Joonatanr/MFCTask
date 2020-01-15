@@ -20,7 +20,9 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	void calculateValues(GraphicPair* dest, float beginX, float endX);
+	GraphicPair myArray[600];
 	CGraph * myGraph;
+	
 
 // Implementation
 protected:

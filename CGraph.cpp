@@ -25,6 +25,14 @@ CGraph::CGraph(int lMargin, int uMargin) : CGraph()
 		upperMargin = uMargin;
 }
 
+void CGraph::setMeasurementValues(GraphicPair* values) 
+{
+	for (int x = 0; x < 600; x++) 
+	{
+		measurementValues[x] = values[x];
+	}
+}
+
 void CGraph::draw(CClientDC* pDC)
 {
 	COLORREF borderColor = RGB(255, 0, 0);

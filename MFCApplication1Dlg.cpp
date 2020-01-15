@@ -208,14 +208,27 @@ void CMFCApplication1Dlg::calculateValues(GraphicPair* dest, float beginX, float
 
 void CMFCApplication1Dlg::OnBnClickedButton1()
 {
-	// TODO: Add your control notification handler code here
-	if (myGraph != NULL) 
+	float beginX;
+	float endX;
+	CString parseString;
+
+	GetDlgItemText(IDC_EDIT_XMIN, parseString);
+	beginX = _ttof(parseString);
+
+	GetDlgItemText(IDC_EDIT_XMAX, parseString);
+	endX = _ttof(parseString);
+
+	/* Here we do the actual calculations. */
+	calculateValues(myArray, beginX, endX);
+
+	/*Set the value pairs here. */
+	myGraph->setMeasurementValues(myArray);
+
+	/* Finally we draw the graph. */
+	if (myGraph != NULL)
 	{
 		//CPaintDC dc(this);
 		CClientDC dc(this);
 		myGraph->draw(&dc);
 	}
-
-	CString res;
-	GetDlgItemText(IDC_EDIT_UVALUE, res);
 }
