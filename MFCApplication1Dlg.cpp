@@ -103,6 +103,15 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
+	/* Set default values for the init boxes. */
+	SetDlgItemText(IDC_EDIT_UVALUE, L"1");
+	SetDlgItemText(IDC_EDIT_FREQ, L"2");
+	SetDlgItemText(IDC_EDIT_OFFSET, L"0");
+	SetDlgItemText(IDC_EDIT_XMIN, L"0");
+	SetDlgItemText(IDC_EDIT_XMAX, L"10");
+	SetDlgItemText(IDC_EDIT_YMIN, L"-2");
+	SetDlgItemText(IDC_EDIT_YMAX, L"2");
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -156,6 +165,46 @@ HCURSOR CMFCApplication1Dlg::OnQueryDragIcon()
 }
 
 
+/* Custom function for calculating the necessary datapoints for the graph display. */
+void CMFCApplication1Dlg::calculateValues(GraphicPair* dest, float beginX, float endX)
+{
+	/* We calculate 600 value pairs. */
+	float interval = endX - beginX;
+	float singleInterval = interval / 600;
+
+	float currentX = beginX;
+	float currentY;
+	
+	/* Lets get numeric values from the inputs also. */
+	float Uvalue;
+	float FrqValue;
+	float OffsetValue;
+
+	CString parseString;
+
+	GetDlgItemText(IDC_EDIT_UVALUE, parseString);
+	Uvalue = _ttof(parseString);
+
+	GetDlgItemText(IDC_EDIT_FREQ, parseString);
+	FrqValue = _ttof(parseString);
+
+	GetDlgItemText(IDC_EDIT_OFFSET, parseString);
+	OffsetValue = _ttof(parseString);
+
+
+	for (int x = 0; x < 600; x++) 
+	{
+		currentY = sinf(2 * 3.14 * FrqValue * currentX);
+		currentY *= Uvalue;
+		currentY += OffsetValue;
+
+		dest[x].xValue = currentX;
+		dest[x].yValue = currentY;
+
+		currentX += singleInterval;
+	}
+
+}
 
 void CMFCApplication1Dlg::OnBnClickedButton1()
 {
