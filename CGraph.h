@@ -11,8 +11,8 @@ class CGraph
 {
 
 private:
-	int leftMargin;
-	int upperMargin;
+	float leftMargin;
+	float upperMargin;
 	int width = 600;
 	int height = 300;
 
