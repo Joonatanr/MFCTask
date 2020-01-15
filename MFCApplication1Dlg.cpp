@@ -210,6 +210,8 @@ void CMFCApplication1Dlg::OnBnClickedButton1()
 {
 	float beginX;
 	float endX;
+	float minY;
+	float maxY;
 	CString parseString;
 
 	GetDlgItemText(IDC_EDIT_XMIN, parseString);
@@ -218,16 +220,21 @@ void CMFCApplication1Dlg::OnBnClickedButton1()
 	GetDlgItemText(IDC_EDIT_XMAX, parseString);
 	endX = _ttof(parseString);
 
+	GetDlgItemText(IDC_EDIT_YMIN, parseString);
+	minY = _ttof(parseString);
+
+	GetDlgItemText(IDC_EDIT_YMAX, parseString);
+	maxY = _ttof(parseString);
+
 	/* Here we do the actual calculations. */
 	calculateValues(myArray, beginX, endX);
 
 	/*Set the value pairs here. */
-	myGraph->setMeasurementValues(myArray);
+	myGraph->setMeasurementValues(myArray, minY, maxY, beginX, endX);
 
 	/* Finally we draw the graph. */
 	if (myGraph != NULL)
 	{
-		//CPaintDC dc(this);
 		CClientDC dc(this);
 		myGraph->draw(&dc);
 	}

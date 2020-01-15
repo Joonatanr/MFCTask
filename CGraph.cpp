@@ -12,6 +12,11 @@ CGraph::CGraph()
 		height = 300;
 		width = 600;
 
+		xMin = 0;
+		xMax = 10;
+		yMin = -10;
+		yMax = 10;
+
 		for (int x = 0; x < 600; x++) 
 		{
 			measurementValues[x].xValue = 0.0;
@@ -25,7 +30,7 @@ CGraph::CGraph(int lMargin, int uMargin) : CGraph()
 		upperMargin = uMargin;
 }
 
-void CGraph::setMeasurementValues(GraphicPair* values) 
+void CGraph::setMeasurementValues(GraphicPair* values, float yMin, float yMax, float xMin, float xMax) 
 {
 	for (int x = 0; x < 600; x++) 
 	{
@@ -35,11 +40,73 @@ void CGraph::setMeasurementValues(GraphicPair* values)
 
 void CGraph::draw(CClientDC* pDC)
 {
-	COLORREF borderColor = RGB(255, 0, 0);
-	CPen borderPen(PS_SOLID, 7, borderColor);
+	COLORREF backColor = RGB(255, 255, 255);	
 
 	int xOffset = leftMargin * 30;
 	int yOffset = upperMargin * 30;
 
-	pDC->Rectangle(xOffset, yOffset, width - xOffset, height - yOffset);
+	//pDC->Rectangle(xOffset, yOffset, width - xOffset, height - yOffset);
+	
+	/* Use a white rectangle as background. */
+	pDC->FillSolidRect(xOffset, yOffset, width, height, backColor);
+
+	/* Draw the axes. */
+	pDC->MoveTo(xOffset, yOffset);
+	pDC->LineTo(xOffset, yOffset + height);
+
+	/* We need to discover first if there is a zero axis. */
+	if (yMin <= 0.0) 
+	{
+		/* We need the point for 0.... */
+		POINT zeroAxisStart;
+		POINT zeroAxisEnd;
+
+		if (translateCoordinateIntoPixel(xMin, 0.0, &zeroAxisStart) == true) 
+		{
+			if (translateCoordinateIntoPixel(xMax, 0.0, &zeroAxisEnd) == true) 
+			{
+				pDC-> MoveTo(zeroAxisStart);
+				pDC->LineTo(zeroAxisEnd);
+			}
+		}
+
+	}
+}
+
+
+/* Function for translating between coordinate systems. */
+bool CGraph::translateCoordinateIntoPixel(float valueX, float valueY, POINT * out) 
+{	
+	/* First check if we are in range. */
+	if (valueX < xMin || valueX > xMax) 
+	{
+		return false;
+	}
+
+	if (valueY < yMin || valueY > yMax) 
+	{
+		return false;
+	}
+
+	float yValueRange = yMax - yMin;
+	float xValueRange = xMax - xMin;
+	/* Note that width and height equal the pixel value ranges. */
+
+	float yCoefficient = height / yValueRange;
+	float xCoefficient = width / xValueRange;
+
+
+	float translatedX = valueX - xMin;
+	float translatedY = valueY - yMin;
+
+	translatedX = translatedX * xCoefficient;
+	translatedY = translatedY * yCoefficient;
+
+	translatedX += (leftMargin * 30);
+	translatedY += (upperMargin * 30);
+
+	out->x = translatedX;
+	out->y = translatedY;
+
+	return true;
 }
