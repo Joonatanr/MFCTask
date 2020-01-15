@@ -36,6 +36,11 @@ void CGraph::setMeasurementValues(GraphicPair* values, float yMin, float yMax, f
 	{
 		measurementValues[x] = values[x];
 	}
+
+	this->yMin = yMin;
+	this->yMax = yMax;
+	this->xMin = xMin;
+	this->xMax = xMax;
 }
 
 void CGraph::draw(CClientDC* pDC)
@@ -69,7 +74,22 @@ void CGraph::draw(CClientDC* pDC)
 				pDC->LineTo(zeroAxisEnd);
 			}
 		}
+	}
 
+	/* So now we draw the datapoints. */
+	for (int x = 0; x < (600 - 1); x++) 
+	{
+		POINT p1;
+		POINT p2;
+
+		if (translateCoordinateIntoPixel(measurementValues[x].xValue, measurementValues[x].yValue, &p1) == true) 
+		{
+			if (translateCoordinateIntoPixel(measurementValues[x+1].xValue, measurementValues[x+1].yValue, &p2) == true)
+			{
+				pDC->MoveTo(p1);
+				pDC->LineTo(p2);
+			}
+		}
 	}
 }
 
@@ -100,7 +120,7 @@ bool CGraph::translateCoordinateIntoPixel(float valueX, float valueY, POINT * ou
 	float translatedY = valueY - yMin;
 
 	translatedX = translatedX * xCoefficient;
-	translatedY = translatedY * yCoefficient;
+	translatedY = height - (translatedY * yCoefficient);
 
 	translatedX += (leftMargin * 30);
 	translatedY += (upperMargin * 30);
