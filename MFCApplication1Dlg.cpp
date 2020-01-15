@@ -166,4 +166,7 @@ void CMFCApplication1Dlg::OnBnClickedButton1()
 		CClientDC dc(this);
 		myGraph->draw(&dc);
 	}
+
+	CString res;
+	GetDlgItemText(IDC_EDIT_UVALUE, res);
 }
